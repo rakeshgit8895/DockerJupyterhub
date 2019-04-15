@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+ROM ubuntu:16.04
 MAINTAINER My Humble Self <rksdel8895@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update && \
@@ -7,22 +7,26 @@ RUN apt-get -y update && \
     apt-get purge && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get update
-RUN apt-get install -y libgl1-mesa-glx apt-utils openssh-server net-tools
-# Conda update and creation of environment
-RUN conda update conda && \
-    conda env create -f environment.yml && \
-    # Activation of environment and correction of bash
-    echo "source activate xlshp_env" > ~/.bash
+ENV LANG C.UTF-8
+RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O /tmp/miniconda.sh  && \
+    echo 'e1045ee415162f944b6aebfe560b8fee */tmp/miniconda.sh' | md5sum -c - && \
+    bash /tmp/miniconda.sh -f -b -p /opt/conda && \
+    /opt/conda/bin/conda install --yes -c conda-forge \
+      python=3.6 sqlalchemy tornado jinja2 traitlets requests pip pycurl \
+      nodejs configurable-http-proxy && \
+    /opt/conda/bin/pip install --upgrade pip && \
+    rm /tmp/miniconda.sh
+ENV PATH=/opt/conda/bin:$PATH
 
 ADD . /src/jupyterhub
 WORKDIR /src/jupyterhub
 RUN pip install numpy && \
-    pip install jupyter bqplot pyyaml && \
     pip install dockerspawner && \
-    
+    pip install jupyter bqplot pyyaml && \
+    pip install jupyros && \
+    jupyter nbextension enable --py --sys-prefix jupyros
 
-RUN pip install jupyterhub 
+RUN pip install jupyterhub
 
 
 

@@ -1,4 +1,4 @@
-ROM ubuntu:16.04
+FROM ubuntu:16.04
 MAINTAINER My Humble Self <rksdel8895@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update && \

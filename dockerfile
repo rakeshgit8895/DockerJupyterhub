@@ -22,7 +22,7 @@ ADD . /src/jupyterhub
 WORKDIR /src/jupyterhub
 RUN pip install numpy && \
     pip install jupyter bqplot pyyaml && \
-    pip install dockerspawner \
+    pip install dockerspawner\
     
 
 RUN pip install jupyterhub 
